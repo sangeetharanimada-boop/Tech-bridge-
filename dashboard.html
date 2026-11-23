@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TechBridge – Power up your learning journey</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2300838f'/><text x='50' y='68' font-size='58' text-anchor='middle' fill='white'>❯</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--teal:#00838f;--teal2:#006472;--teal3:#e0f2f4;--bg:#eaf3f4;--card:#fff;--text:#12303a;--muted:#62808a;--line:#d5e5e8;--amber:#ffb300;--danger:#d93a3a;--ok:#1b9a59;--shadow:0 1px 2px rgba(0,60,70,.08),0 6px 18px rgba(0,60,70,.06)}
+[data-theme=dark]{--bg:#0c181d;--card:#14262d;--text:#e6f1f3;--muted:#8fa9b2;--line:#25404a;--teal3:#173840}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+[hidden]{display:none!important}
+a{color:var(--teal)}
+.grad{background:linear-gradient(180deg,#00909b 0%,#006b7d 55%,#005a6b 100%)}
+
+/* splash */
+#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;transition:opacity .5s}
+#splash.out{opacity:0;pointer-events:none}
+.logo{font-weight:700;letter-spacing:-.5px;line-height:1;display:inline-flex;align-items:flex-end;gap:6px}
+.logo .chev{font-size:1.1em;color:#fff}
+.logo small{font-size:.28em;font-weight:600;letter-spacing:1px;opacity:.85;margin-bottom:.4em}
+#splash .logo{font-size:54px}
+#splash p{margin-top:14px;font-size:17px;font-weight:500}
+
+/* landing */
+#landing{min-height:100%;color:#fff;display:flex;flex-direction:column}
+.l-top{display:flex;align-items:center;gap:10px;padding:14px 18px}
+.l-top .logo{font-size:26px;margin-right:auto}
+.pill{border-radius:999px;padding:8px 20px;font-weight:600}
+.pill.ghost{border:2px solid #fff;color:#fff}
+.pill.solid{background:#fff;color:var(--teal2)}
+.icb{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:rgba(255,255,255,.18);color:#fff}
+.l-search{position:relative;flex:1;max-width:420px}
+.l-search input{width:100%;padding:10px 16px;border-radius:999px;border:0;background:#fff;color:#12303a}
+.hero{margin:auto;padding:30px 22px 80px;text-align:center;max-width:760px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.1;margin-bottom:14px}
+.hero p{font-size:17px;opacity:.9;margin-bottom:26px}
+.hero .pill{font-size:16px;padding:12px 30px;margin:0 6px}
+.feat{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:36px}
+.feat span{background:rgba(255,255,255,.14);border-radius:999px;padding:6px 14px;font-size:13px}
+
+/* search suggestions */
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--card);color:var(--text);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.25);overflow:hidden;z-index:60;max-height:340px;overflow-y:auto}
+.s-item{display:flex;gap:10px;align-items:center;padding:9px 14px;cursor:pointer}
+.s-item:hover{background:var(--teal3)}
+.s-item small{display:block;color:var(--muted);font-size:12px}
+.s-empty{padding:12px 16px;color:var(--muted)}
+
+/* app shell */
+#app{min-height:100%;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:8px;padding:10px 12px;color:#fff}
+.ic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:rgba(255,255,255,.2);color:#fff;position:relative;flex:none;overflow:hidden}
+.ic:hover{background:rgba(255,255,255,.32)}
+.ic.sm{width:34px;height:34px;font-size:16px;background:transparent;color:var(--teal2)}
+.ic.sm:hover{background:var(--teal3)}
+.searchbar{flex:1;max-width:620px;margin:0 auto;position:relative;display:flex;align-items:center;gap:4px;background:#fff;border-radius:999px;padding:3px 6px 3px 14px;color:#12303a;min-width:0}
+.searchbar input{flex:1;border:0;outline:0;background:none;padding:7px 4px;min-width:0;color:#12303a}
+.badge{position:absolute;top:-2px;right:-2px;background:#e53935;color:#fff;border-radius:999px;font-size:11px;min-width:18px;height:18px;padding:0 5px;display:grid;place-items:center;font-weight:700}
+.av{display:grid;place-items:center;border-radius:50%;background:var(--amber);color:#4a3200;font-weight:700;overflow:hidden;flex:none}
+.av img{width:100%;height:100%;object-fit:cover}
+main{flex:1;width:100%;max-width:880px;margin:0 auto;padding:16px 14px 100px}
+.bnav{position:fixed;left:50%;transform:translateX(-50%);bottom:10px;width:min(96vw,720px);background:var(--card);border-radius:28px;box-shadow:0 8px 30px rgba(0,60,70,.25);display:flex;justify-content:space-around;padding:6px 4px;z-index:40}
+.bnav button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 6px;border-radius:16px;color:var(--muted);font-size:10.5px;flex:1}
+.bnav button span{font-size:20px}
+.bnav button.on{color:var(--teal);background:var(--teal3);font-weight:600}
+
+/* drawer */
+#veil{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;opacity:0;pointer-events:none;transition:.25s}
+#veil.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;bottom:0;left:0;width:min(84vw,320px);background:var(--card);z-index:71;transform:translateX(-102%);transition:transform .25s;display:flex;flex-direction:column}
+#drawer.on{transform:none}
+.d-head{padding:22px 20px 14px}
+.d-head .av{width:72px;height:72px;font-size:28px;margin-bottom:10px}
+.d-head h3{font-size:18px}
+.d-head p{color:var(--muted);font-size:13px}
+.d-menu{flex:1;overflow-y:auto;border-top:1px solid var(--line);padding:8px 0}
+.d-menu button,.d-foot button{display:flex;align-items:center;gap:14px;width:100%;padding:13px 22px;font-size:16px;font-weight:500;text-align:left}
+.d-menu button:hover,.d-foot button:hover{background:var(--teal3)}
+.d-foot{border-top:1px solid var(--line)}
+.d-foot .out{color:var(--danger)}
+
+/* generic */
+.card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h3{font-size:16px;margin-bottom:8px}
+.row{display:flex;gap:10px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted);font-size:13px}
+.btn{background:var(--teal);color:#fff;border-radius:999px;padding:9px 18px;font-weight:600;font-size:14px}
+.btn:hover{background:var(--teal2)}
+.btn.out{background:none;border:2px solid var(--teal);color:var(--teal)}
+.btn.red{background:var(--danger)}
+.btn.ok{background:var(--ok)}
+.btn.sm{padding:5px 13px;font-size:13px}
+.btn.block{width:100%;padding:12px}
+.chip{display:inline-block;background:var(--teal3);color:var(--teal);border-radius:999px;padding:2px 10px;font-size:12px;margin:2px 3px 2px 0}
+.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto}
+.tabs button{padding:7px 16px;border-radius:999px;background:var(--card);color:var(--muted);font-weight:500;white-space:nowrap}
+.tabs button.on{background:var(--teal);color:#fff}
+input[type=text],input[type=password],input[type=date],select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);outline:0}
+input:focus,select:focus,textarea:focus{border-color:var(--teal)}
+label{display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px;color:var(--muted)}
+label i{color:var(--danger);font-style:normal}
+.empty{text-align:center;color:var(--muted);padding:34px 10px}
+.empty b{display:block;font-size:16px;color:var(--text);margin-bottom:4px}
+.hello h2{font-size:26px;line-height:1.2}
+.hello p{color:var(--muted);margin:2px 0 14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:18px;padding:14px;box-shadow:var(--shadow);text-align:center}
+.stat b{font-size:24px;display:block;color:var(--teal)}
+.hero-card{background:linear-gradient(120deg,#00838f,#006472);color:#fff;border-radius:22px;padding:18px;margin-bottom:14px}
+.hero-card h3{font-size:18px}
+.hero-card p{opacity:.9;margin:4px 0 12px}
+.hero-card .btn{background:#fff;color:var(--teal2)}
+
+/* people */
+.person{display:flex;gap:12px;align-items:flex-start}
+.person .av{width:52px;height:52px;font-size:20px}
+.person h4{font-size:15px}
+.person .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+
+/* posts */
+.post .ph{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.post .av{width:42px;height:42px}
+.post .txt{white-space:pre-wrap;word-break:break-word;margin-bottom:8px}
+.post img.att,.post video.att{width:100%;max-height:420px;object-fit:contain;background:#000;border-radius:14px;margin-bottom:8px}
+.fileatt{display:flex;gap:10px;align-items:center;background:var(--teal3);border-radius:14px;padding:10px 14px;margin-bottom:8px;text-decoration:none;color:var(--text)}
+.pa{display:flex;border-top:1px solid var(--line);margin-top:6px;padding-top:4px}
+.pa button{flex:1;padding:8px 2px;border-radius:12px;color:var(--muted);font-weight:500;font-size:13px}
+.pa button:hover{background:var(--teal3)}
+.pa button.on{color:var(--teal);font-weight:700}
+.cm{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.cm .c{display:flex;gap:8px;margin-bottom:8px}
+.cm .av{width:30px;height:30px;font-size:12px}
+.cm .bub{background:var(--bg);border-radius:14px;padding:6px 12px;flex:1}
+.cm .rep{margin-left:38px}
+.cm form{display:flex;gap:6px;margin-top:6px}
+.linkb{color:var(--teal);font-size:12px;font-weight:600}
+
+/* overlay sheet */
+#ov{position:fixed;inset:0;z-index:80;background:rgba(0,20,25,.6);display:flex;align-items:flex-end;justify-content:center;padding:0}
+#ov .sheet{background:var(--card);width:100%;max-width:560px;max-height:94vh;overflow-y:auto;border-radius:26px 26px 0 0;padding:20px 20px 28px;position:relative}
+@media(min-width:640px){#ov{align-items:center;padding:20px}#ov .sheet{border-radius:26px}}
+.sheet .x{position:absolute;top:12px;right:14px;width:34px;height:34px;border-radius:50%;background:var(--bg);font-size:16px}
+.sheet h2{font-size:21px;margin-bottom:2px;padding-right:36px}
+.sheet .sub{color:var(--muted);margin-bottom:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:480px){.g2{grid-template-columns:1fr}}
+.pwbar{height:5px;border-radius:5px;background:var(--line);margin-top:6px;overflow:hidden}
+.pwbar i{display:block;height:100%;width:0;background:var(--danger);transition:.2s}
+.pwrow{position:relative}
+.pwrow button{position:absolute;right:8px;top:7px;font-size:12px;color:var(--teal);font-weight:600}
+.err{color:var(--danger);font-size:13px;margin-top:8px;min-height:18px}
+.pf-head{text-align:center;padding-top:6px}
+.pf-head .av{width:96px;height:96px;font-size:36px;margin:0 auto 8px;cursor:pointer}
+.sec{margin-top:16px}
+.sec h4{font-size:14px;margin-bottom:6px;color:var(--teal)}
+.n{display:flex;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line)}
+.n.un{background:var(--teal3);border-radius:12px;padding-left:10px}
+.n .ico{font-size:22px}
+
+/* PPT */
+.ppt{display:grid;grid-template-columns:130px 1fr;gap:12px}
+@media(max-width:600px){.ppt{grid-template-columns:1fr}}
+.thumbs{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto}
+@media(max-width:600px){.thumbs{flex-direction:row;overflow-x:auto}}
+.th{flex:none;width:120px;aspect-ratio:16/9;border-radius:8px;color:#fff;font-size:9px;padding:6px;overflow:hidden;border:3px solid transparent;text-align:left;font-weight:600}
+.th.on{border-color:var(--amber)}
+.canvas{aspect-ratio:16/9;border-radius:14px;padding:5%;display:flex;flex-direction:column;justify-content:center;gap:10px;color:#fff}
+.canvas input,.canvas textarea{background:rgba(255,255,255,.12);border:1px dashed rgba(255,255,255,.5);color:#fff;border-radius:8px}
+.canvas input{font-size:clamp(18px,4vw,34px);font-weight:700}
+.canvas textarea{flex:1;font-size:clamp(13px,2.4vw,20px);resize:none}
+#present{position:fixed;inset:0;z-index:120;color:#fff;display:flex;flex-direction:column;justify-content:center;padding:8vw;cursor:pointer}
+#present h1{font-size:clamp(32px,7vw,76px);margin-bottom:3vw}
+#present p{font-size:clamp(18px,3vw,38px);white-space:pre-wrap}
+#present small{position:absolute;bottom:14px;right:20px;opacity:.7}
+
+/* call */
+#call{position:fixed;inset:0;z-index:110;background:#10181c;color:#fff;display:flex;flex-direction:column}
+.lobby{margin:auto;text-align:center;padding:20px;max-width:380px}
+.lobby h2{margin-bottom:6px}
+.lobby input{background:#1c2a30;border-color:#2e434b;margin:8px 0;text-align:center;text-transform:uppercase;letter-spacing:3px}
+.mhead{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0a1114}
+.mhead code{background:#1c2a30;padding:3px 10px;border-radius:8px;letter-spacing:2px}
+.mbody{flex:1;display:flex;min-height:0}
+.grid{flex:1;display:grid;gap:8px;padding:8px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));grid-auto-rows:minmax(160px,1fr);overflow:auto}
+.tile{position:relative;background:#1c2a30;border-radius:14px;overflow:hidden;display:grid;place-items:center}
+.tile video{width:100%;height:100%;object-fit:cover;background:#000}
+.tile.screen video{object-fit:contain}
+.tile .nm{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);padding:2px 10px;border-radius:999px;font-size:12px}
+.tile .ph{position:absolute;font-size:40px;opacity:.5}
+#mchat{width:300px;background:#0a1114;display:flex;flex-direction:column;border-left:1px solid #22343b}
+@media(max-width:700px){#mchat{position:absolute;inset:48px 0 70px 20%;width:auto;z-index:5}}
+#mmsgs{flex:1;overflow-y:auto;padding:10px;font-size:13px}
+#mmsgs div{margin-bottom:8px}
+#mchat form{display:flex;gap:6px;padding:8px}
+#mchat input{background:#1c2a30;border-color:#2e434b}
+.ctrls{display:flex;justify-content:center;gap:12px;padding:12px;background:#0a1114;flex-wrap:wrap}
+.cb{width:54px;height:54px;border-radius:50%;background:#26363d;font-size:22px;color:#fff;display:grid;place-items:center}
+.cb.off{background:#c62828}
+.cb.on{background:#2e7d32}
+.cb.end{background:#d32f2f;width:auto;border-radius:999px;padding:0 24px;font-size:16px;font-weight:600}
+#scanv{width:100%;border-radius:16px;background:#000;aspect-ratio:4/3;object-fit:cover}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#12303a;color:#fff;padding:10px 20px;border-radius:999px;z-index:200;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="grad">
+  <div class="logo"><span>TechBridge</span><span class="chev">❯</span><small>BY CHANAKYA</small></div>
+  <p>Power up your learning journey</p>
+</div>
+
+<!-- LANDING (before login) -->
+<div id="landing" class="grad" hidden>
+  <div class="l-top">
+    <div class="logo"><span>TechBridge</span><span class="chev">❯</span></div>
+    <div class="l-search" id="lsWrap" hidden><input id="lq" type="text" placeholder="Search students…" autocomplete="off"><div class="sugg" id="lsugg" hidden></div></div>
+    <button class="icb" data-act="lsearch" title="Search" aria-label="Search">🔍</button>
+    <button class="pill ghost" data-act="auth" data-m="login">Login</button>
+    <button class="pill solid" data-act="auth" data-m="register">Register</button>
+  </div>
+  <div class="hero">
+    <h1>Power up your learning journey</h1>
+    <p>Share projects and technical ideas, connect with Chanakya University students, collaborate on slides and meet face-to-face in group calls.</p>
+  </div>
+</div>
+
+<!-- APP (after login) -->
+<div id="app" hidden>
+  <header class="top grad">
+    <button class="ic" data-act="drawer" title="Menu" aria-label="Open menu">☰</button>
+    <div class="searchbar" id="sb">
+      <span>🔍</span>
+      <input id="q" type="text" placeholder="Search students by name or username" autocomplete="off">
+      <button class="ic sm" data-act="mic" title="Voice search" aria-label="Voice search">🎙️</button>
+      <button class="ic sm" data-act="scan" title="Scan QR or photo" aria-label="Scan QR">📷</button>
+      <div class="sugg" id="sugg" hidden></div>
+    </div>
+    <button class="ic" data-act="call" title="Group call" aria-label="Group call">🎥</button>
+    <button class="ic" data-act="notifs" title="Notifications" aria-label="Notifications">🔔<span class="badge" id="nb" hidden></span></button>
+    <button class="ic av" data-act="myprofile" id="topav" title="My profile" aria-label="My profile"></button>
+  </header>
+  <main id="main"></main>
+  <nav class="bnav" id="bnav">
+    <button data-act="go" data-v="home"><span>🏠</span>Home</button>
+    <button data-act="go" data-v="network"><span>👥</span>Network</button>
+    <button data-act="go" data-v="posts"><span>📝</span>Posts</button>
+    <button data-act="go" data-v="video"><span>🎬</span>Video</button>
+    <button data-act="go" data-v="jobs"><span>💼</span>Jobs</button>
+    <button data-act="go" data-v="docs"><span>🗃️</span>Docs</button>
+    <button data-act="go" data-v="ppt"><span>📊</span>PPT</button>
+  </nav>
+  <div id="veil" data-act="drawer"></div>
+  <aside id="drawer" aria-label="Menu">
+    <div class="d-head"><div class="av" id="dav"></div><h3 id="dname"></h3><p id="duser"></p><p id="dedu"></p></div>
+    <div class="d-menu">
+      <button data-act="go" data-v="home">🏠 Home</button>
+      <button data-act="go" data-v="network">👥 Network</button>
+      <button data-act="go" data-v="posts">📝 Posts</button>
+      <button data-act="go" data-v="video">🎬 Video</button>
+      <button data-act="go" data-v="jobs">💼 Jobs</button>
+      <button data-act="go" data-v="docs">🗃️ Docs</button>
+      <button data-act="go" data-v="ppt">📊 PPT maker</button>
+    </div>
+    <div class="d-foot">
+      <button data-act="settings">⚙️ Settings &amp; Privacy</button>
+      <button class="out" data-act="logout">🚪 Logout / Sign out</button>
+    </div>
+  </aside>
+</div>
+
+<div id="ov" hidden></div>
+<div id="call" hidden></div>
+<div id="present" hidden></div>
+<div id="toast"></div>
+<input type="file" id="photoIn" accept="image/*" hidden>
+
+<script>
+/* ============================ helpers ============================ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let ME=null, VIEW='home', TAB={}, OPEN=new Set(), PPTID=null;
+const ACTS={}; const on=(n,f)=>ACTS[n]=f;
+
+async function api(url,opts={}){
+  if(opts.body&&!(opts.body instanceof FormData)&&typeof opts.body!=='string'){opts.body=JSON.stringify(opts.body);opts.headers={'Content-Type':'application/json',...opts.headers}}
+  const r=await fetch(url,{credentials:'same-origin',...opts});let d={};try{d=await r.json()}catch(e){}
+  if(!r.ok){if(r.status===401&&ME){location.reload()}throw new Error(d.error||'Something went wrong')}
+  return d}
+const post=(u,b)=>api(u,{method:'POST',body:b||{}});
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2800)}
+function ago(ts){const s=Math.max(1,Date.now()/1000-ts);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';return Math.floor(s/86400)+' d ago'}
+function av(u,size){const st=size?`style="width:${size}px;height:${size}px;font-size:${size*.38}px"`:'';
+  return `<div class="av" ${st}>${u.photo?`<img src="${h(u.photo)}" alt="">`:h((u.name||u.username||'?').trim()[0].toUpperCase())}</div>`}
+function chips(a){return (a||[]).map(s=>`<span class="chip">${h(s)}</span>`).join('')}
+function eduLine(u){return [u.qualification,u.programme,u.year&&('Year: '+u.year),u.semester].filter(Boolean).map(h).join(' • ')}
+function empty(t,s){return `<div class="empty"><b>${t}</b>${s||''}</div>`}
+function openSheet(html){const o=$('#ov');o.innerHTML=`<div class="sheet" role="dialog" aria-modal="true"><button class="x" data-act="closeov" aria-label="Close">✕</button>${html}</div>`;o.hidden=false;o.onclick=e=>{if(e.target===o)closeSheet()}}
+function closeSheet(){$('#ov').hidden=true;$('#ov').innerHTML=''}
+function fileLink(f){return f?`<a class="fileatt" href="${h(f.url)}" target="_blank" rel="noopener">📄 <span>${h(f.name)}</span></a>`:''}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');
+  if(!e.target.closest('.searchbar')&&!e.target.closest('.l-search'))$$('.sugg').forEach(s=>s.hidden=true);
+  if(!t)return;const f=ACTS[t.dataset.act];if(f){e.preventDefault();Promise.resolve(f(t.dataset,t,e)).catch(err=>toast(err.message))}});
+
+/* ============================ boot ============================ */
+window.addEventListener('load',async()=>{
+  const q=new URLSearchParams(location.search);
+  if(q.get('ppt'))sessionStorage.setItem('joinppt',JSON.stringify({id:q.get('ppt'),token:q.get('token')}));
+  const [d]=await Promise.all([api('/api/me').catch(()=>({user:null})),new Promise(r=>setTimeout(r,1500))]);
+  $('#splash').classList.add('out');setTimeout(()=>$('#splash').remove(),600);
+  if(d.user)enterApp(d.user);else showLanding();
+});
+function showLanding(){ME=null;$('#app').hidden=true;$('#landing').hidden=false;bindSearch($('#lq'),$('#lsugg'))}
+on('lsearch',()=>{const w=$('#lsWrap');w.hidden=!w.hidden;if(!w.hidden)$('#lq').focus()});
+
+async function enterApp(user){
+  ME=user;$('#landing').hidden=true;$('#app').hidden=false;closeSheet();
+  $('#topav').innerHTML=av(ME);paintDrawer();bindSearch($('#q'),$('#sugg'));
+  VIEW='home';render();pollNotifs();clearInterval(window._np);window._np=setInterval(pollNotifs,10000);
+  const j=sessionStorage.getItem('joinppt');
+  if(j){sessionStorage.removeItem('joinppt');try{const {id,token}=JSON.parse(j);await post(`/api/ppts/${id}/join`,{token});history.replaceState({},'',location.pathname);VIEW='ppt';PPTID=id;render();toast('Joined the presentation')}catch(e){toast(e.message)}}
+}
+function paintDrawer(){$('#dav').innerHTML=av(ME).replace('class="av"','class="av" style="width:72px;height:72px;font-size:28px"');
+  $('#dname').textContent=ME.name;$('#duser').textContent='@'+ME.username;$('#dedu').textContent=[ME.programme,ME.year].filter(Boolean).join(' • ')}
+async function pollNotifs(){try{const d=await api('/api/notifications/count');const b=$('#nb');b.textContent=d.unread>99?'99+':d.unread;b.hidden=!d.unread}catch(e){}}
+
+/* ============================ auth ============================ */
+on('auth',d=>openAuth(d.m));
+function openAuth(mode,note){
+  if(mode==='login')openSheet(`<h2>Welcome back</h2><p class="sub">${h(note||'Log in with your username and password')}</p>
+  <form id="lf"><label>Username</label><input type="text" name="username" autocomplete="username" required>
+  <label>Password</label><div class="pwrow"><input type="password" name="password" autocomplete="current-password" required><button type="button" data-act="showpw">Show</button></div>
+  <div class="err" id="ferr"></div><button class="btn block">Login</button></form>
+  <p class="muted" style="text-align:center;margin-top:12px">New here? <a href="#" data-act="auth" data-m="register">Register</a></p>`);
+  else openSheet(`<h2>Create Student Account</h2><p class="sub">Fill in your academic details, a unique username and a strong password.</p>
+  <form id="rf"><div class="g2">
+   <div><label>First name <i>*</i></label><input type="text" name="first_name" required></div>
+   <div><label>Last name <i>*</i></label><input type="text" name="last_name" required></div>
+   <div><label>Date of birth <i>*</i></label><input type="date" name="dob" required></div>
+   <div><label>Username (e.g. CU0000) <i>*</i></label><input type="text" name="username" placeholder="CU0000" required></div>
+   <div><label>Qualification <i>*</i></label><select name="qualification">${['B.Tech','M.Tech','BCA','MCA','B.Sc','M.Sc','Diploma','Other'].map(x=>`<option>${x}</option>`).join('')}</select></div>
+   <div><label>Year <i>*</i></label><select name="year">${['1st Year','2nd Year','3rd Year','4th Year'].map(x=>`<option ${x[0]=='2'?'selected':''}>${x}</option>`).join('')}</select></div>
+   <div><label>Programme <i>*</i></label><select name="programme">${['CSE','CSE (AI & ML)','ECE (Electronics & Comm.)','EEE','Mechanical','Civil','Other'].map(x=>`<option>${h(x)}</option>`).join('')}</select></div>
+   <div><label>Semester <i>*</i></label><select name="semester">${[1,2,3,4,5,6,7,8].map(x=>`<option ${x==3?'selected':''}>Sem ${x}</option>`).join('')}</select></div></div>
+   <label>Skills (comma-separated) <i>*</i></label><input type="text" name="skills" placeholder="Python, C++, VLSI, Digital Logic" required>
+   <label>Strong password <i>*</i></label><div class="pwrow"><input type="password" name="password" id="rpw" autocomplete="new-password" required><button type="button" data-act="showpw">Show</button></div>
+   <div class="pwbar"><i id="pwb"></i></div><p class="muted">8+ chars, uppercase, lowercase, digit &amp; symbol</p>
+   <label>Short bio (optional)</label><textarea name="bio" rows="2" placeholder="Projects, research interests, or career goals…"></textarea>
+   <div class="err" id="ferr"></div><button class="btn block">Create account</button></form>
+  <p class="muted" style="text-align:center;margin-top:12px">Already registered? <a href="#" data-act="auth" data-m="login">Login</a></p>`);
+  const lf=$('#lf'),rf=$('#rf');
+  if(lf)lf.onsubmit=async e=>{e.preventDefault();try{await post('/api/login',Object.fromEntries(new FormData(lf)));enterApp((await api('/api/me')).user)}catch(x){$('#ferr').textContent=x.message}};
+  if(rf){const pw=$('#rpw');pw.oninput=()=>{const v=pw.value;const s=[v.length>=8,/[A-Z]/.test(v),/[a-z]/.test(v),/\d/.test(v),/[^\w\s]/.test(v)].filter(Boolean).length;const b=$('#pwb');b.style.width=s*20+'%';b.style.background=s<3?'#d93a3a':s<5?'#ffb300':'#1b9a59'};
+    rf.onsubmit=async e=>{e.preventDefault();try{await post('/api/register',Object.fromEntries(new FormData(rf)));enterApp((await api('/api/me')).user)}catch(x){$('#ferr').textContent=x.message}}}
+}
+on('showpw',(d,b)=>{const i=b.previousElementSibling;i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show':'Hide'});
+on('closeov',closeSheet);
+on('logout',async()=>{await post('/api/logout');location.reload()});
+
+/* ============================ search (Trie on server) ============================ */
+function bindSearch(input,box){
+  if(input._b)return;input._b=1;let t;
+  input.addEventListener('input',()=>{clearTimeout(t);const v=input.value.trim();if(!v){box.hidden=true;return}
+    t=setTimeout(async()=>{const d=await api('/api/search?q='+encodeURIComponent(v));
+      box.innerHTML=d.results.length?d.results.map(u=>`<div class="s-item" data-act="pick" data-u="${h(u.username)}">${av(u,36)}<div><b>${h(u.name)}</b><small>@${h(u.username)} • ${h(u.programme)} ${h(u.year)}</small></div></div>`).join(''):'<div class="s-empty">No students found</div>';box.hidden=false},150)});
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){const f=box.querySelector('.s-item');if(f)f.click()}});
+}
+on('pick',d=>{$$('.sugg').forEach(s=>s.hidden=true);if(ME)openProfile(d.u);else openAuth('login','Log in to view student profiles')});
+on('mic',()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Voice search is not supported in this browser (try Chrome)');
+  const r=new SR();r.lang='en-IN';r.interimResults=false;toast('🎙️ Listening…');
+  r.onresult=e=>{const q=$('#q');q.value=e.results[0][0].transcript.replace(/\.$/,'');q.dispatchEvent(new Event('input'))};r.onerror=()=>toast('Could not hear you');r.start()});
+
+/* QR / photo scanner */
+let scanStream=null;
+on('scan',()=>{openSheet(`<h2>Scan QR</h2><p class="sub">Point the camera at a TechBridge QR code, or upload a photo.</p><video id="scanv" playsinline muted></video>
+  <div class="row" style="margin-top:12px"><label class="btn out grow" style="margin:0;text-align:center;cursor:pointer">📷 Upload photo<input type="file" id="scanf" accept="image/*" hidden></label></div><p class="err" id="serr"></p>`);
+  if(!('BarcodeDetector' in window)){$('#serr').textContent='QR scanning needs Chrome/Edge (BarcodeDetector). You can still search by name.';return}
+  const det=new BarcodeDetector({formats:['qr_code']});const handle=v=>{stopScan();closeSheet();const m=/^techbridge:user:(.+)$/.exec(v);if(m)openProfile(m[1]);else if(/^https?:\/\//.test(v)){if(confirm('Open this link?\n'+v))window.open(v,'_blank','noopener')}else{$('#q').value=v;$('#q').dispatchEvent(new Event('input'));toast('Scanned: '+v)}};
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{scanStream=s;const v=$('#scanv');v.srcObject=s;v.play();
+    const loop=async()=>{if(!scanStream)return;try{const c=await det.detect(v);if(c.length)return handle(c[0].rawValue)}catch(e){}setTimeout(loop,300)};loop()}).catch(()=>$('#serr').textContent='Camera permission denied');
+  $('#scanf').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const c=await det.detect(await createImageBitmap(f));c.length?handle(c[0].rawValue):$('#serr').textContent='No QR code found in that photo'}catch(x){$('#serr').textContent='Could not read that photo'}}});
+function stopScan(){if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null}}
+new MutationObserver(()=>{if($('#ov').hidden)stopScan()}).observe($('#ov'),{attributes:true,attributeFilter:['hidden']});
+
+/* ============================ navigation ============================ */
+on('drawer',()=>{$('#drawer').classList.toggle('on');$('#veil').classList.toggle('on')});
+on('go',d=>{$('#drawer').classList.remove('on');$('#veil').classList.remove('on');if(d.v!=='ppt')PPTID=null;VIEW=d.v;render();scrollTo(0,0)});
+async function render(){
+  $$('#bnav button').forEach(b=>b.classList.toggle('on',b.dataset.v===VIEW));
+  const m=$('#main');clearInterval(window._pp);
+  try{m.innerHTML=await VIEWS[VIEW]()}catch(e){m.innerHTML=empty('Something went wrong',h(e.message))}
+  if(VIEW==='ppt'&&PPTID)startPptSync();
+}
+const tabsHtml=(key,list,def)=>{const cur=TAB[key]||def;return `<div class="tabs">${list.map(([k,l])=>`<button class="${cur===k?'on':''}" data-act="tab" data-k="${key}" data-t="${k}">${l}</button>`).join('')}</div>`};
+on('tab',d=>{TAB[d.k]=d.t;render()});
+
+/* ============================ views ============================ */
+const VIEWS={
+ async home(){
+  const [net,tr,feed]=await Promise.all([api('/api/network'),api('/api/trending'),api('/api/feed?limit=5')]);
+  return `<div class="hello"><h2>Hello ${h(ME.first_name)} ${h(ME.last_name)},</h2><p>Take the first step to your goal today.</p></div>
+  <div class="stats"><div class="stat"><b>${net.connections.length}</b>Connections</div><div class="stat"><b>${net.incoming.length}</b>Requests</div><div class="stat"><b>${net.suggestions.length}</b>Suggestions</div></div>
+  <div class="hero-card"><h3>Study together, live</h3><p>Start a group video call. Your connections get notified instantly.</p><button class="btn" data-act="call">🎥 Start a group call</button></div>
+  ${tr.posts.length?`<h3 style="margin:6px 4px 10px">🔥 Trending among your connections</h3>${tr.posts.map(postHtml).join('')}`:''}
+  <h3 style="margin:6px 4px 10px">Latest from your network</h3>${feed.posts.length?feed.posts.map(postHtml).join(''):empty('Your feed is empty','Connect with classmates or write your first post.')}`},
+
+ async network(){
+  const n=await api('/api/network');const t=TAB.network||'conn';
+  let body='';
+  if(t==='conn')body=n.connections.length?n.connections.map(u=>personHtml(u,`<button class="btn sm" data-act="profile" data-u="${h(u.username)}">View profile</button><button class="btn sm out" data-act="msg" data-u="${h(u.username)}">💬 Message</button><button class="btn sm out" data-act="conn" data-a="remove" data-u="${h(u.username)}">Remove</button>`)).join(''):empty('No connections yet','Open “People you may know” to send your first request.');
+  if(t==='req')body=(n.incoming.length?'<h3 style="margin:0 4px 8px">Received</h3>'+n.incoming.map(u=>personHtml(u,`<button class="btn sm ok" data-act="conn" data-a="accept" data-u="${h(u.username)}">Accept</button><button class="btn sm red" data-act="conn" data-a="reject" data-u="${h(u.username)}">Reject</button><button class="btn sm out" data-act="profile" data-u="${h(u.username)}">View</button>`)).join(''):'')
+     +(n.outgoing.length?'<h3 style="margin:10px 4px 8px">Sent</h3>'+n.outgoing.map(u=>personHtml(u,`<button class="btn sm out" data-act="conn" data-a="cancel" data-u="${h(u.username)}">Cancel request</button>`)).join(''):'')
+     ||'';
+  if(t==='req'&&!n.incoming.length&&!n.outgoing.length)body=empty('No pending requests');
+  if(t==='sugg')body=n.suggestions.length?n.suggestions.map(u=>personHtml(u,`<button class="btn sm" data-act="conn" data-a="send" data-u="${h(u.username)}">Connect</button><button class="btn sm out" data-act="profile" data-u="${h(u.username)}">View</button>`,u.mutual?`${u.mutual} mutual • match ${(u.score*100).toFixed(0)}%`:'')).join(''):empty('No suggestions yet','More students will appear as they register.');
+  if(t==='grp')body=n.groups.length?n.groups.map((g,i)=>`<div class="card"><h3>Community ${i+1} <span class="muted">(${g.length} students)</span></h3>${g.map(u=>`<span class="chip" style="cursor:pointer" data-act="profile" data-u="${h(u.username)}">${h(u.name)}</span>`).join('')}</div>`).join(''):empty('No community yet','Groups form when students connect with each other.');
+  return tabsHtml('network',[['conn',`Connections (${n.connections.length})`],['req',`Requests (${n.incoming.length})`],['sugg','People you may know'],['grp','Groups']],'conn')+body},
+
+ async posts(){
+  const t=TAB.posts||'feed';let list=[];
+  if(t==='feed')list=(await api('/api/feed')).posts;
+  if(t==='mine')list=(await api('/api/posts/user/'+ME.username)).posts;
+  if(t==='saved')list=(await api('/api/docs')).saved;
+  return `<div class="card"><form id="pf"><textarea name="text" rows="3" placeholder="Share a project, idea or question…"></textarea>
+   <div class="row wrap" style="margin-top:8px"><label class="btn out sm" style="margin:0;cursor:pointer">📎 Attach photo / resume / report<input type="file" name="file" hidden id="pfile"></label><span class="muted grow" id="pfname"></span><button class="btn">Post</button></div></form></div>`
+   +tabsHtml('posts',[['feed','Feed'],['mine','My posts'],['saved','Saved']],'feed')
+   +(list.length?list.map(postHtml).join(''):empty(t==='saved'?'Nothing saved':'No posts yet',t==='feed'?'Posts from you and your connections show up here, newest first.':''))},
+
+ async video(){
+  const v=(await api('/api/videos')).videos;
+  return `<div class="card"><h3>🎬 Upload a video</h3><form id="vf"><input type="text" name="title" placeholder="Title"><textarea name="desc" rows="2" placeholder="Description (optional)" style="margin-top:8px"></textarea>
+   <label>Video file *</label><input type="file" name="video" accept="video/*" required><label>Attach a file or post (optional)</label><input type="file" name="attach"><div class="err" id="verr"></div><button class="btn" style="margin-top:8px">Upload video</button></form></div>`
+  +(v.length?v.map(x=>`<div class="card post"><div class="ph" data-act="profile" data-u="${h(x.author.username)}" style="cursor:pointer">${av(x.author)}<div class="grow"><b>${h(x.author.name)}</b><div class="muted">${ago(x.ts)}</div></div>${x.mine?`<button class="btn sm out" data-act="delvideo" data-id="${x.id}" onclick="event.stopPropagation()">Delete</button>`:''}</div>
+    <b>${h(x.title)}</b><p class="muted" style="margin-bottom:8px">${h(x.desc)}</p><video class="att" controls preload="metadata" src="${h(x.video.url)}"></video>${fileLink(x.attach)}</div>`).join(''):empty('No videos yet','Videos from you and your connections appear here.'))},
+
+ async jobs(){
+  const j=(await api('/api/jobs')).jobs;
+  return `<div class="row" style="margin-bottom:12px"><h3 class="grow">💼 Jobs &amp; recruitments</h3><button class="btn" data-act="newjob">+ Post a job</button></div>`
+  +(j.length?j.map(x=>`<div class="card"><div class="row"><div class="grow"><h3 style="margin:0">${h(x.title)}</h3><div class="muted">${h(x.company)} • ${h(x.location||'Anywhere')} • ${h(x.type)}</div></div><span class="muted">${ago(x.ts)}</span></div>
+    <p style="margin:8px 0;white-space:pre-wrap">${h(x.description)}</p><div class="row wrap"><span class="muted grow">Posted by <a href="#" data-act="profile" data-u="${h(x.poster.username)}">${h(x.poster.name)}</a> • ${x.count} applicant${x.count==1?'':'s'}</span>
+    ${x.mine?`<button class="btn sm out" data-act="deljob" data-id="${x.id}">Delete</button>`:x.applied?'<span class="chip">✓ Applied</span>':`<button class="btn sm" data-act="apply" data-id="${x.id}" data-t="${h(x.title)}">Send resume</button>`}</div>
+    ${x.mine&&x.applicants.length?`<div class="cm"><b>Applicants</b>${x.applicants.map(a=>`<div class="row" style="padding:6px 0">${av(a.user,34)}<div class="grow"><a href="#" data-act="profile" data-u="${h(a.user.username)}">${h(a.user.name)}</a><div class="muted">${h(a.note)}</div></div>${a.resume?`<a class="btn sm out" href="${h(a.resume.url)}" target="_blank" rel="noopener">Resume</a>`:''}</div>`).join('')}</div>`:''}</div>`).join(''):empty('No job posts yet','Post an opening or internship for fellow students.'))},
+
+ async docs(){
+  const d=await api('/api/docs');
+  return `<div class="card"><h3>🗃️ My documents</h3><p class="muted">Resumes, reports, certificates — your personal folder.</p><form id="df" class="row wrap" style="margin-top:8px"><input type="text" name="title" placeholder="Title (optional)" class="grow"><input type="file" name="file" required><button class="btn">Upload</button></form></div>`
+  +(d.files.length?d.files.map(f=>`<div class="card row">${f.kind==='image'?`<img src="${h(f.url)}" style="width:48px;height:48px;object-fit:cover;border-radius:10px" alt="">`:'<span style="font-size:30px">📄</span>'}<div class="grow"><b>${h(f.title)}</b><div class="muted">${ago(f.ts)}</div></div><a class="btn sm out" href="${h(f.url)}" target="_blank" rel="noopener">Open</a><button class="btn sm red" data-act="deldoc" data-id="${f.id}">Delete</button></div>`).join(''):empty('No files yet','Upload your first document.'))
+  +`<h3 style="margin:16px 4px 10px">🔖 Saved posts (${d.saved.length})</h3>`+(d.saved.length?d.saved.map(postHtml).join(''):empty('No saved posts','Tap Save on any post to keep it here.'))},
+
+ async ppt(){
+  if(PPTID)return pptEditorHtml();
+  const l=(await api('/api/ppts')).ppts;
+  return `<div class="card"><h3>📊 Team PPT maker</h3><p class="muted">Create slides together in real time. The owner shares a link; teammates join from their own devices.</p>
+   <form id="npf" class="row wrap" style="margin-top:8px"><input type="text" name="title" placeholder="Deck title" class="grow"><button class="btn">+ New deck</button></form>
+   <form id="jpf" class="row wrap" style="margin-top:8px"><input type="text" name="link" placeholder="Paste a share link to join" class="grow"><button class="btn out">Join</button></form></div>`
+  +(l.length?l.map(p=>`<div class="card row"><span style="font-size:30px">📊</span><div class="grow"><b>${h(p.title)}</b><div class="muted">${p.members.length} member${p.members.length==1?'':'s'} • edited ${ago(p.updated)} by ${h(p.last_editor)}</div></div><button class="btn sm" data-act="openppt" data-id="${p.id}">Open</button></div>`).join(''):empty('No decks yet','Create one and share the link with your team.'))}
+};
+
+/* ---------- shared renderers ---------- */
+function personHtml(u,acts,extra){return `<div class="card person">${av(u)}<div class="grow"><h4><a href="#" data-act="profile" data-u="${h(u.username)}" style="color:inherit;text-decoration:none">${h(u.name)}</a> <span class="muted">@${h(u.username)}</span></h4>
+  <div class="muted">${eduLine(u)}</div>${u.skills.length?`<div>${chips(u.skills.slice(0,6))}</div>`:''}${extra?`<div class="muted">${h(extra)}</div>`:''}<div class="acts">${acts}</div></div></div>`}
+function postHtml(p){
+  const a=p.file?(p.file.kind==='image'?`<img class="att" src="${h(p.file.url)}" alt="${h(p.file.name)}">`:p.file.kind==='video'?`<video class="att" controls src="${h(p.file.url)}"></video>`:fileLink(p.file)):'';
+  const cc=p.comments.reduce((s,c)=>s+1+c.replies.length,0);
+  return `<div class="card post" id="p-${p.id}"><div class="ph">${av(p.author)}<div class="grow" style="cursor:pointer" data-act="profile" data-u="${h(p.author.username)}"><b>${h(p.author.name)}</b><div class="muted">${h(p.author.programme)} • ${ago(p.ts)}</div></div>${p.mine?`<button class="btn sm out" data-act="delpost" data-id="${p.id}">🗑 Delete</button>`:''}</div>
+  ${p.text?`<div class="txt">${h(p.text)}</div>`:''}${a}
+  <div class="muted"><a href="#" data-act="likers" data-names="${h(p.likers.join(', '))}" style="text-decoration:none;color:inherit">👍 ${p.likes}</a> • ${cc} comment${cc==1?'':'s'}</div>
+  <div class="pa"><button class="${p.liked?'on':''}" data-act="like" data-id="${p.id}">👍 ${p.liked?'Liked':'Like'}</button><button data-act="cmt" data-id="${p.id}">💬 Comment</button><button data-act="share" data-id="${p.id}">➤ Send</button><button class="${p.saved?'on':''}" data-act="savep" data-id="${p.id}">🔖 ${p.saved?'Saved':'Save'}</button></div>
+  ${OPEN.has(p.id)?`<div class="cm">${p.comments.map(c=>`<div class="c">${av(c.user)}<div class="grow"><div class="bub"><b>${h(c.user.name)}</b><br>${h(c.text)}</div><a href="#" class="linkb" data-act="reply" data-id="${p.id}" data-c="${c.id}">Reply</a> <span class="muted">${ago(c.ts)}</span>
+     ${c.replies.map(r=>`<div class="c rep" style="margin-top:6px">${av(r.user)}<div class="bub"><b>${h(r.user.name)}</b><br>${h(r.text)}</div></div>`).join('')}</div></div>`).join('')||'<div class="muted">No comments yet.</div>'}
+     <form data-form="comment" data-id="${p.id}"><input type="text" name="text" placeholder="Write a comment…" required><button class="btn sm">Send</button></form></div>`:''}</div>`}
+const refresh=()=>VIEW==='profile'?0:render();
+
+/* ============================ actions ============================ */
+on('go',ACTS.go);
+on('profile',d=>openProfile(d.u));
+on('conn',async d=>{await post(`/api/connect/${d.a}/${d.u}`);toast({send:'Request sent',accept:'Connected!',reject:'Request rejected',cancel:'Request cancelled',remove:'Connection removed'}[d.a]);closeSheet();render()});
+on('msg',d=>{openSheet(`<h2>Message</h2><p class="sub">to @${h(d.u)}</p><textarea id="mt" rows="3" placeholder="Write a message…"></textarea><button class="btn block" style="margin-top:10px" data-act="sendmsg" data-u="${h(d.u)}">Send message</button>`)});
+on('sendmsg',async d=>{await post('/api/message',{to:d.u,text:$('#mt').value});closeSheet();toast('Message sent')});
+on('like',async d=>{await post(`/api/posts/${d.id}/like`);render()});
+on('cmt',d=>{OPEN.has(d.id)?OPEN.delete(d.id):OPEN.add(d.id);render()});
+on('reply',d=>{const t=prompt('Write your reply');if(t)post(`/api/posts/${d.id}/comment`,{text:t,reply_to:d.c}).then(render).catch(e=>toast(e.message))});
+on('savep',async d=>{const r=await post(`/api/posts/${d.id}/save`);toast(r.saved?'Saved to your Docs folder':'Removed from saved');render()});
+on('delpost',async d=>{if(confirm('Delete this post?')){await api('/api/posts/'+d.id,{method:'DELETE'});render()}});
+on('likers',(d)=>{toast(d.names?'Liked by: '+d.names:'No likes yet')});
+on('share',async d=>{const n=await api('/api/network');if(!n.connections.length)return toast('Connect with someone first');
+  openSheet(`<h2>Send post</h2><p class="sub">Choose a connection</p>${n.connections.map(u=>`<div class="s-item" data-act="doshare" data-id="${d.id}" data-u="${h(u.username)}">${av(u,36)}<div><b>${h(u.name)}</b><small>@${h(u.username)}</small></div></div>`).join('')}`)});
+on('doshare',async d=>{await post(`/api/posts/${d.id}/share`,{to:d.u});closeSheet();toast('Post sent')});
+on('delvideo',async d=>{if(confirm('Delete video?')){await api('/api/videos/'+d.id,{method:'DELETE'});render()}});
+on('deljob',async d=>{if(confirm('Delete job post?')){await api('/api/jobs/'+d.id,{method:'DELETE'});render()}});
+on('deldoc',async d=>{await api('/api/docs/'+d.id,{method:'DELETE'});render()});
+on('newjob',()=>{openSheet(`<h2>Post a job</h2><form id="jf"><label>Job title *</label><input type="text" name="title" required><label>Company *</label><input type="text" name="company" required><div class="g2"><div><label>Location</label><input type="text" name="location"></div><div><label>Type</label><select name="type"><option>Full-time</option><option>Internship</option><option>Part-time</option><option>Freelance</option></select></div></div><label>Description *</label><textarea name="description" rows="4" required></textarea><div class="err" id="ferr"></div><button class="btn block">Publish job</button></form>`);
+  $('#jf').onsubmit=async e=>{e.preventDefault();try{await post('/api/jobs',Object.fromEntries(new FormData(e.target)));closeSheet();render()}catch(x){$('#ferr').textContent=x.message}}});
+on('apply',d=>{openSheet(`<h2>Apply</h2><p class="sub">${h(d.t)}</p><form id="af"><label>Resume (PDF / DOC)</label><input type="file" name="resume"><label>Note to the recruiter</label><textarea name="note" rows="3"></textarea><div class="err" id="ferr"></div><button class="btn block">Send application</button></form>`);
+  $('#af').onsubmit=async e=>{e.preventDefault();try{await api(`/api/jobs/${d.id}/apply`,{method:'POST',body:new FormData(e.target)});closeSheet();toast('Application sent');render()}catch(x){$('#ferr').textContent=x.message}}});
+
+/* form submits (delegated) */
+document.addEventListener('change',e=>{if(e.target.id==='pfile')$('#pfname').textContent=e.target.files[0]?.name||''});
+document.addEventListener('submit',async e=>{
+  const f=e.target;const dt=f.dataset.form;
+  const run=async fn=>{e.preventDefault();try{await fn()}catch(x){toast(x.message)}};
+  if(dt==='comment')return run(async()=>{await post(`/api/posts/${f.dataset.id}/comment`,{text:f.text.value});render()});
+  if(f.id==='pf')return run(async()=>{await api('/api/posts',{method:'POST',body:new FormData(f)});toast('Posted');render()});
+  if(f.id==='vf')return run(async()=>{toast('Uploading… please wait');await api('/api/videos',{method:'POST',body:new FormData(f)});toast('Video uploaded');render()});
+  if(f.id==='df')return run(async()=>{await api('/api/docs',{method:'POST',body:new FormData(f)});toast('Uploaded');render()});
+  if(f.id==='npf')return run(async()=>{const p=await post('/api/ppts',{title:f.title.value});PPTID=p.id;render()});
+  if(f.id==='jpf')return run(async()=>{const u=new URL(f.link.value.trim());const id=u.searchParams.get('ppt'),token=u.searchParams.get('token');if(!id)throw new Error('That is not a valid share link');await post(`/api/ppts/${id}/join`,{token});PPTID=id;render()});
+});
+
+/* ============================ profile ============================ */
+on('myprofile',()=>openProfile(ME.username));
+async function openProfile(u){
+  const [p,ps]=await Promise.all([api('/api/profile/'+u),api('/api/posts/user/'+u)]);const me=p.username===ME.username;
+  if(me)ME={...ME,...p};
+  let rel='';
+  if(!me){const r=p.relation;
+    rel=`<div class="row wrap" style="justify-content:center;margin-top:10px">${r==='connected'?`<button class="btn sm out" data-act="msg" data-u="${p.username}">💬 Message</button><button class="btn sm out" data-act="conn" data-a="remove" data-u="${p.username}">Remove</button>`:r==='sent'?`<button class="btn sm out" data-act="conn" data-a="cancel" data-u="${p.username}">Cancel request</button>`:r==='received'?`<button class="btn sm ok" data-act="conn" data-a="accept" data-u="${p.username}">Accept</button><button class="btn sm red" data-act="conn" data-a="reject" data-u="${p.username}">Reject</button>`:`<button class="btn sm" data-act="conn" data-a="send" data-u="${p.username}">+ Connect</button>`}</div>`;
+    const ord=n=>n===1?'1st':n===2?'2nd':n===3?'3rd':n+'th';
+    rel+=`<div class="sec"><h4>Connection</h4>${p.degree?`<b>${ord(p.degree)} degree connection</b><div class="muted" style="margin-top:4px">Shortest chain: ${p.chain.map(c=>h(c.name)).join(' → ')}</div>`:'<span class="muted">No chain of connections between you yet</span>'}
+      ${p.mutual.length?`<div style="margin-top:6px"><span class="muted">${p.mutual.length} mutual:</span> ${p.mutual.map(m=>`<span class="chip">${h(m.name)}</span>`).join('')}</div>`:''}</div>`}
+  openSheet(`<div class="pf-head">${me?`<div data-act="photo" title="Change photo">${av(p,96)}</div><button class="linkb" data-act="photo">Change profile photo</button>`:av(p,96)}
+   <h2 style="padding:0">${h(p.name)}</h2><div class="muted">@${h(p.username)} • ${p.connections} connection${p.connections==1?'':'s'}</div>${p.bio?`<p style="margin-top:8px">${h(p.bio)}</p>`:''}${rel}
+   ${me?`<div class="row wrap" style="justify-content:center;margin-top:10px"><button class="btn sm out" data-act="myqr">My QR code</button><button class="btn sm out" data-act="settings">⚙️ Edit profile</button></div>`:''}</div>
+   <div class="sec"><h4>🎓 Education</h4><div>${h(p.qualification)} — ${h(p.programme)}</div><div class="muted">${h(p.year)} • ${h(p.semester)}</div></div>
+   <div class="sec"><h4>🛠 Skills</h4>${chips(p.skills)||'<span class="muted">None added</span>'}</div>
+   <div class="sec"><h4>🏅 Certificates &amp; participation</h4>${p.certificates.map(c=>`<div class="row" style="padding:4px 0"><a class="grow" href="${h(c.url)}" target="_blank" rel="noopener">📜 ${h(c.title)}</a>${me?`<button class="linkb" data-act="delcert" data-id="${c.id}">Remove</button>`:''}</div>`).join('')||'<span class="muted">No certificates yet</span>'}
+     ${me?`<form id="cf" class="row wrap" style="margin-top:8px"><input type="text" name="title" placeholder="Certificate title" class="grow"><input type="file" name="file" required><button class="btn sm">Add</button></form>`:''}</div>
+   <div class="sec"><h4>📝 ${me?'My posts':'Posts'} (${ps.posts.length})</h4>${ps.posts.map(x=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><span class="muted">${ago(x.ts)}</span><div style="white-space:pre-wrap">${h(x.text)||'📎 '+h(x.file?.name||'')}</div><span class="muted">👍 ${x.likes} • 💬 ${x.comments.length}</span></div>`).join('')||'<span class="muted">No posts yet</span>'}</div>`);
+  const cf=$('#cf');if(cf)cf.onsubmit=async e=>{e.preventDefault();try{await api('/api/certificates',{method:'POST',body:new FormData(cf)});openProfile(u)}catch(x){toast(x.message)}};
+}
+on('delcert',async d=>{await api('/api/certificates/'+d.id,{method:'DELETE'});openProfile(ME.username)});
+on('photo',()=>$('#photoIn').click());
+$('#photoIn').onchange=async e=>{const f=e.target.files[0];if(!f)return;const fd=new FormData();fd.append('photo',f);
+  try{ME=await api('/api/profile/update',{method:'POST',body:fd});$('#topav').innerHTML=av(ME);paintDrawer();openProfile(ME.username)}catch(x){toast(x.message)}e.target.value=''};
+on('myqr',()=>{openSheet(`<h2>My QR code</h2><p class="sub">Classmates can scan this with 📷 to open your profile.</p><div id="qrbox" style="display:grid;place-items:center;padding:16px;background:#fff;border-radius:16px"></div>`);
+  if(window.QRCode)new QRCode($('#qrbox'),{text:'techbridge:user:'+ME.username,width:200,height:200});else $('#qrbox').textContent='QR library could not load (check internet)'});
+
+/* ============================ settings ============================ */
+on('settings',()=>{$('#drawer').classList.remove('on');$('#veil').classList.remove('on');
+  openSheet(`<h2>⚙️ Settings &amp; Privacy</h2><form id="sf"><label>Short bio</label><textarea name="bio" rows="2">${h(ME.bio)}</textarea><label>Skills (comma-separated)</label><input type="text" name="skills" value="${h(ME.skills.join(', '))}">
+   <div class="g2"><div><label>Qualification</label><input type="text" name="qualification" value="${h(ME.qualification)}"></div><div><label>Programme</label><input type="text" name="programme" value="${h(ME.programme)}"></div><div><label>Year</label><input type="text" name="year" value="${h(ME.year)}"></div><div><label>Semester</label><input type="text" name="semester" value="${h(ME.semester)}"></div></div>
+   <button class="btn block" style="margin-top:12px">Save profile</button></form>
+   <div class="sec"><h4>🌙 Appearance</h4><button class="btn out sm" data-act="theme">Toggle dark mode</button></div>
+   <div class="sec"><h4>🔒 Change password</h4><form id="pwf"><input type="password" name="old" placeholder="Current password"><input type="password" name="new" placeholder="New password" style="margin-top:6px"><div class="err" id="ferr"></div><button class="btn sm">Update password</button></form></div>
+   <div class="sec"><button class="btn red block" data-act="logout">🚪 Logout</button></div>`);
+  $('#sf').onsubmit=async e=>{e.preventDefault();try{ME=await api('/api/profile/update',{method:'POST',body:new FormData(e.target)});paintDrawer();toast('Profile saved');render()}catch(x){toast(x.message)}};
+  $('#pwf').onsubmit=async e=>{e.preventDefault();try{await post('/api/password',Object.fromEntries(new FormData(e.target)));e.target.reset();toast('Password updated')}catch(x){$('#ferr').textContent=x.message}}});
+on('theme',()=>{const d=document.documentElement;const n=d.dataset.theme==='dark'?'':'dark';d.dataset.theme=n;localStorage.setItem('tb-theme',n)});
+document.documentElement.dataset.theme=localStorage.getItem('tb-theme')||'';
+
+/* ============================ notifications ============================ */
+const NICO={request:'👤',info:'✅',like:'👍',comment:'💬',share:'➤',message:'✉️',post:'📝',job:'💼',call:'🎥'};
+on('notifs',async()=>{
+  const d=await api('/api/notifications');
+  openSheet(`<h2>🔔 Notifications</h2><p class="sub">${d.unread} unread</p>${d.items.length?d.items.map(n=>`<div class="n ${n.read?'':'un'}"><div class="ico">${NICO[n.type]||'🔔'}</div><div class="grow"><div>${h(n.text)}</div><div class="muted">${ago(n.ts)}</div>
+   ${n.type==='request'&&n.pending?`<div class="row" style="margin-top:6px"><button class="btn sm ok" data-act="nconn" data-a="accept" data-u="${h(n.from)}">Accept</button><button class="btn sm red" data-act="nconn" data-a="reject" data-u="${h(n.from)}">Reject</button></div>`:''}
+   ${n.type==='call'?(n.live?`<button class="btn sm" style="margin-top:6px" data-act="joincall" data-room="${h(n.room)}">Join call</button>`:'<span class="muted">Call ended</span>'):''}
+   ${n.type==='message'?`<button class="linkb" data-act="msg" data-u="${h(n.from)}">Reply</button>`:''}</div></div>`).join(''):empty('You are all caught up')}`);
+  await post('/api/notifications/read');pollNotifs()});
+on('nconn',async(d,b)=>{await post(`/api/connect/${d.a}/${d.u}`);toast(d.a==='accept'?'Connected!':'Request rejected');ACTS.notifs();if(VIEW==='network')render()});
+on('joincall',d=>{closeSheet();enterCall(d.room)});
+
+/* ============================ collaborative PPT ============================ */
+let DECK=null, DECKV=0, DIRTY=false, CUR=0, UNDO=[], saveT=null;
+async function pptEditorHtml(){
+  const p=await api('/api/ppts/'+PPTID);DECK=p;DECKV=p.version;DIRTY=false;CUR=Math.min(CUR,p.slides.length-1);UNDO=[];
+  return pptShell();
+}
+function pptShell(){const p=DECK,s=p.slides[CUR];
+  return `<div class="row wrap" style="margin-bottom:10px"><button class="btn sm out" data-act="pptback">← Decks</button><input type="text" id="ptitle" value="${h(p.title)}" class="grow" style="font-weight:600">
+   <span class="muted" id="psync">Synced ✓ v${p.version}</span></div>
+  <div class="row wrap" style="margin-bottom:10px"><button class="btn sm" data-act="addslide">+ Slide</button><button class="btn sm out" data-act="dupslide">⧉ Duplicate</button><button class="btn sm out" data-act="delslide">🗑 Delete</button><button class="btn sm out" data-act="undo">↩ Undo</button>
+   <input type="color" id="pbg" value="${h(s.bg)}" title="Background" style="width:40px;height:34px;padding:2px;border-radius:10px"><button class="btn sm ok" data-act="present">▶ Present</button>${p.share_link?`<button class="btn sm out" data-act="copylink">🔗 Share link</button>`:''}</div>
+  <div class="muted" style="margin-bottom:8px">👥 ${p.members.map(m=>h(m.name)).join(', ')}</div>
+  <div class="ppt"><div class="thumbs" id="thumbs">${p.slides.map((x,i)=>`<button class="th ${i===CUR?'on':''}" style="background:${h(x.bg)}" data-act="pickslide" data-i="${i}">${i+1}. ${h(x.title)}</button>`).join('')}</div>
+  <div class="canvas" id="cv" style="background:${h(s.bg)}"><input type="text" id="stitle" value="${h(s.title)}" placeholder="Slide title"><textarea id="sbody" placeholder="Slide text">${h(s.body)}</textarea></div></div>`}
+function paintDeck(){$('#main').innerHTML=pptShell();bindDeck()}
+function bindDeck(){
+  const ed=()=>{snap();const s=DECK.slides[CUR];s.title=$('#stitle').value;s.body=$('#sbody').value;markDirty();const t=$$('#thumbs .th')[CUR];if(t)t.textContent=(CUR+1)+'. '+s.title};
+  const st=$('#stitle'),sb=$('#sbody');if(!st)return;
+  let lastSnap=0;const snap=()=>{if(Date.now()-lastSnap>1500){UNDO.push(JSON.stringify(DECK.slides));if(UNDO.length>30)UNDO.shift();lastSnap=Date.now()}};
+  st.oninput=sb.oninput=ed;
+  $('#pbg').oninput=e=>{UNDO.push(JSON.stringify(DECK.slides));DECK.slides[CUR].bg=e.target.value;$('#cv').style.background=e.target.value;$$('#thumbs .th')[CUR].style.background=e.target.value;markDirty()};
+  $('#ptitle').oninput=e=>{DECK.title=e.target.value;markDirty()};
+}
+function markDirty(){DIRTY=true;$('#psync').textContent='Saving…';clearTimeout(saveT);saveT=setTimeout(saveDeck,800)}
+async function saveDeck(){if(!DIRTY||!DECK)return;try{const r=await post('/api/ppts/'+PPTID,{slides:DECK.slides,title:DECK.title});DECKV=r.version;DIRTY=false;$('#psync')&&($('#psync').textContent='Synced ✓ v'+r.version)}catch(e){$('#psync')&&($('#psync').textContent='Save failed')}}
+function startPptSync(){bindDeck();window._pp=setInterval(async()=>{
+  if(!PPTID||DIRTY)return;try{const r=await api(`/api/ppts/${PPTID}?since=${DECKV}`);if(r.unchanged)return;
+    const ae=document.activeElement;if(ae&&(ae.id==='stitle'||ae.id==='sbody')&&Date.now()-(window._lastKey||0)<3000)return;
+    DECK=r;DECKV=r.version;CUR=Math.min(CUR,r.slides.length-1);paintDeck();toast('Teammate updated the deck')}catch(e){}},2500)}
+document.addEventListener('keydown',()=>window._lastKey=Date.now());
+on('openppt',d=>{PPTID=d.id;CUR=0;render()});
+on('pptback',async()=>{await saveDeck();PPTID=null;render()});
+on('pickslide',d=>{CUR=+d.i;paintDeck()});
+on('addslide',async()=>{DECK.slides.splice(CUR+1,0,{title:'New slide',body:'',bg:DECK.slides[CUR].bg});CUR++;paintDeck();markDirty()});
+on('dupslide',()=>{DECK.slides.splice(CUR+1,0,{...DECK.slides[CUR]});CUR++;paintDeck();markDirty()});
+on('delslide',()=>{if(DECK.slides.length<2)return toast('A deck needs at least one slide');UNDO.push(JSON.stringify(DECK.slides));DECK.slides.splice(CUR,1);CUR=Math.max(0,CUR-1);paintDeck();markDirty()});
+on('undo',()=>{const s=UNDO.pop();if(!s)return toast('Nothing to undo');DECK.slides=JSON.parse(s);CUR=Math.min(CUR,DECK.slides.length-1);paintDeck();markDirty()});
+on('copylink',async()=>{try{await navigator.clipboard.writeText(DECK.share_link);toast('Share link copied – send it to your team')}catch(e){prompt('Copy this link',DECK.share_link)}});
+on('present',()=>{let i=CUR;const el=$('#present');const draw=()=>{const s=DECK.slides[i];el.style.background=s.bg;el.innerHTML=`<h1>${h(s.title)}</h1><p>${h(s.body)}</p><small>${i+1}/${DECK.slides.length} • click or → next • ← back • Esc exit</small>`};
+  const key=e=>{if(e.key==='Escape')end();else if(e.key==='ArrowRight'||e.key===' ')next();else if(e.key==='ArrowLeft'&&i>0){i--;draw()}};
+  const next=()=>{if(i<DECK.slides.length-1){i++;draw()}else end()},end=()=>{el.hidden=true;document.removeEventListener('keydown',key);if(document.fullscreenElement)document.exitFullscreen()};
+  el.onclick=next;document.addEventListener('keydown',key);el.hidden=false;draw();el.requestFullscreen?.().catch(()=>{})});
+
+/* ============================ group video call (WebRTC) ============================ */
+const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
+let C=null;
+on('call',()=>openLobby());
+function openLobby(){const el=$('#call');el.hidden=false;el.innerHTML=`<div class="lobby"><h2>🎥 Group call</h2><p class="muted" style="color:#9fb7bf">Video, mic, screen share and chat — just like a meeting.</p>
+  <button class="btn block" data-act="startcall" style="margin-top:14px">Start a new meeting</button><p style="margin:14px 0 0;color:#9fb7bf">or join with a code</p><input type="text" id="jcode" maxlength="6" placeholder="ABC123"><button class="btn out block" data-act="joincode" style="color:#fff;border-color:#fff">Join meeting</button>
+  <button class="linkb" style="margin-top:14px;color:#9fb7bf" data-act="closecall">Cancel</button></div>`}
+on('closecall',()=>{$('#call').hidden=true;$('#call').innerHTML=''});
+on('startcall',async()=>{const r=await post('/api/call/create');toast('Your connections were notified');enterCall(r.room)});
+on('joincode',()=>{const c=$('#jcode').value.trim();if(c)enterCall(c)});
+async function enterCall(room){
+  room=room.toUpperCase();C={room,pcs:{},remote:{},pend:{},cur:{},cam:true,mic:true,chat:0,busy:false,screen:null};
+  try{C.stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true})}
+  catch(e){try{C.stream=await navigator.mediaDevices.getUserMedia({audio:true});toast('Camera unavailable – audio only')}catch(e2){C.stream=new MediaStream();toast('No camera/mic – joining as viewer (use localhost or https)')}}
+  C.cur={audio:C.stream.getAudioTracks()[0]||null,video:C.stream.getVideoTracks()[0]||null};
+  let j;try{j=await post(`/api/call/${room}/join`)}catch(e){C.stream.getTracks().forEach(t=>t.stop());C=null;$('#call').hidden=false;openLobby();return toast(e.message)}
+  $('#call').hidden=false;
+  $('#call').innerHTML=`<div class="mhead"><b>TechBridge Meeting</b><code>${room}</code><button class="linkb" style="color:#9fe" data-act="copyroom">Copy code</button><span class="grow"></span><span id="pcount" class="muted" style="color:#9fb7bf">1 in call</span></div>
+   <div class="mbody"><div class="grid" id="grid"></div><div id="mchat" hidden><div id="mmsgs"></div><form id="mcf"><input type="text" id="mci" placeholder="Message everyone…" autocomplete="off"><button class="btn sm">Send</button></form></div></div>
+   <div class="ctrls"><button class="cb on" id="bcam" data-act="tcam" title="Video on/off">🎥</button><button class="cb on" id="bmic" data-act="tmic" title="Mute/unmute">🎤</button><button class="cb" id="bscr" data-act="tscreen" title="Share screen">🖥️</button><button class="cb" data-act="tchat" title="Chat">💬</button><button class="cb end" data-act="endcall">⛔ End</button></div>`;
+  addTile(ME.username,ME.name+' (You)',C.stream,true);
+  $('#mcf').onsubmit=async e=>{e.preventDefault();const i=$('#mci');if(i.value.trim()){await post(`/api/call/${room}/chat`,{text:i.value});i.value=''}};
+  for(const p of j.peers)await offerTo(p);
+  C.timer=setInterval(pollCall,1000);pollCall();
+}
+function addTile(user,name,stream,self){let t=$('#t-'+user);if(!t){t=document.createElement('div');t.className='tile';t.id='t-'+user;t.innerHTML=`<span class="ph">👤</span><video autoplay playsinline ${self?'muted':''}></video><span class="nm">${h(name)}</span>`;$('#grid').appendChild(t)}
+  const v=$('video',t);if(v.srcObject!==stream)v.srcObject=stream;v.play?.().catch(()=>{})}
+function mkPC(user){
+  const pc=new RTCPeerConnection(ICE);C.pcs[user]=pc;C.pend[user]=[];
+  pc.onicecandidate=e=>{if(e.candidate)sig(user,{ice:e.candidate})};
+  pc.ontrack=e=>{const ms=C.remote[user]||(C.remote[user]=new MediaStream());ms.addTrack(e.track);addTile(user,C.names?.[user]||user,ms)};
+  return pc}
+const sig=(to,data)=>post(`/api/call/${C.room}/signal`,{to,data}).catch(()=>{});
+async function offerTo(user){
+  const pc=mkPC(user);
+  for(const k of ['audio','video'])pc.addTransceiver(C.cur[k]||k,{direction:'sendrecv',streams:[C.stream]});
+  await pc.setLocalDescription(await pc.createOffer());sig(user,{sdp:pc.localDescription})}
+async function onSignal(from,data){
+  let pc=C.pcs[from];
+  if(data.sdp){
+    if(data.sdp.type==='offer'){
+      if(pc)pc.close();delete C.remote[from];pc=mkPC(from);await pc.setRemoteDescription(data.sdp);
+      for(const t of pc.getTransceivers()){const k=t.receiver.track.kind;t.direction='sendrecv';if(C.cur[k])await t.sender.replaceTrack(C.cur[k])}
+      await flush(from);await pc.setLocalDescription(await pc.createAnswer());sig(from,{sdp:pc.localDescription})}
+    else if(pc){await pc.setRemoteDescription(data.sdp);await flush(from)}}
+  else if(data.ice&&pc){pc.remoteDescription?await pc.addIceCandidate(data.ice).catch(()=>{}):C.pend[from].push(data.ice)}}
+async function flush(u){for(const c of C.pend[u]||[])await C.pcs[u].addIceCandidate(c).catch(()=>{});C.pend[u]=[]}
+async function pollCall(){
+  if(!C||C.busy)return;C.busy=true;
+  try{const d=await api(`/api/call/${C.room}/poll?chat=${C.chat}`);
+    C.names=Object.fromEntries(d.peers.map(p=>[p.username,p.name]));
+    for(const s of d.signals)await onSignal(s.from,s.data);
+    const live=new Set(d.peers.map(p=>p.username));
+    for(const u of Object.keys(C.pcs))if(!live.has(u)){C.pcs[u].close();delete C.pcs[u];delete C.remote[u];$('#t-'+u)?.remove()}
+    $$('#grid .tile').forEach(t=>{const u=t.id.slice(2);const n=C.names[u];if(n)$('.nm',t).textContent=n});
+    $('#pcount').textContent=(d.peers.length+1)+' in call';
+    if(d.chat.length){const b=$('#mmsgs');d.chat.forEach(m=>{b.insertAdjacentHTML('beforeend',`<div><b>${h(m.name)}</b>: ${h(m.text)}</div>`)});b.scrollTop=b.scrollHeight;C.chat=d.chat_total;if($('#mchat').hidden)toast('💬 '+d.chat.at(-1).name+': '+d.chat.at(-1).text)}
+  }catch(e){if(/left|not found/i.test(e.message)){toast(e.message);leaveCall()}}
+  if(C)C.busy=false}
+on('tcam',()=>{const t=C.cur.video;if(!t||C.screen)return toast('No camera available');C.cam=!C.cam;t.enabled=C.cam;$('#bcam').className='cb '+(C.cam?'on':'off');$('#bcam').textContent=C.cam?'🎥':'🚫'});
+on('tmic',()=>{const t=C.cur.audio;if(!t)return toast('No microphone available');C.mic=!C.mic;t.enabled=C.mic;$('#bmic').className='cb '+(C.mic?'on':'off');$('#bmic').textContent=C.mic?'🎤':'🔇'});
+on('tchat',()=>{const c=$('#mchat');c.hidden=!c.hidden});
+on('copyroom',()=>{navigator.clipboard?.writeText(C.room);toast('Meeting code copied')});
+function setVideoTrack(track){for(const pc of Object.values(C.pcs)){const t=pc.getTransceivers().find(x=>x.receiver.track.kind==='video');if(t)t.sender.replaceTrack(track)}}
+on('tscreen',async()=>{
+  if(C.screen){return stopShare()}
+  if(!navigator.mediaDevices.getDisplayMedia)return toast('Screen share is not supported on this device');
+  try{const s=await navigator.mediaDevices.getDisplayMedia({video:true});C.screen=s;const t=s.getVideoTracks()[0];setVideoTrack(t);
+    const tile=$('#t-'+ME.username);tile.classList.add('screen');$('video',tile).srcObject=s;$('#bscr').className='cb on';t.onended=stopShare}catch(e){toast('Screen share cancelled')}});
+function stopShare(){if(!C?.screen)return;C.screen.getTracks().forEach(t=>t.stop());C.screen=null;setVideoTrack(C.cur.video);const tile=$('#t-'+ME.username);tile.classList.remove('screen');$('video',tile).srcObject=C.stream;$('#bscr').className='cb'}
+function leaveCall(){if(!C)return;clearInterval(C.timer);stopShare();C.stream.getTracks().forEach(t=>t.stop());Object.values(C.pcs).forEach(p=>p.close());
+  fetch(`/api/call/${C.room}/leave`,{method:'POST',keepalive:true});C=null;$('#call').hidden=true;$('#call').innerHTML=''}
+on('endcall',()=>{leaveCall();toast('You left the meeting')});
+window.addEventListener('beforeunload',()=>{if(C)navigator.sendBeacon(`/api/call/${C.room}/leave`)});
+</script>
+</body>
+</html>
